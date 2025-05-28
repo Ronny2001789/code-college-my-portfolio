@@ -6,8 +6,7 @@ var totals = [0.0, 0.0, 0.0, 0.0];
 var totalOrderAmt = 0;
 
 function add_selection(x) {
-    console.log(x);
-    quantities[x] = quantities[x] + 1;
+    quantities[x]++;
     totals[x] = prices[x] * quantities[x];
     totalOrderAmt += prices[x];
     display_all();
@@ -15,7 +14,7 @@ function add_selection(x) {
 
 function remove_selection(x) {
     if (quantities[x] > 0) {
-        quantities[x] = quantities[x] - 1;
+        quantities[x]--;
         totals[x] = prices[x] * quantities[x];
         totalOrderAmt -= prices[x];
         display_all();
@@ -36,23 +35,20 @@ function display_all() {
         myTable += "<td style='width: 100px; text-align: right;'>" + items[i] + "</td>";
         myTable += "<td style='width: 100px; text-align: right;'>" + prices[i] + "</td>";
         myTable += "<td style='width: 100px; text-align: right;'>" + quantities[i] + "</td>";
-        myTable += "<td style='width: 100px; text-align: right;'>" + totals[i] + "</td>";
+        myTable += "<td style='width: 100px; text-align: right;'>" + totals[i].toFixed(2) + "</td>";
         myTable += "<td><button onclick='add_selection(" + i + ")'>Add</button></td>";
-        myTable += "<td><button onclick='remove_selection(" + i + ")'>Remove</button></td>";
-        }
+        myTable += "<td><button onclick='remove_selection(" + i + ")'>Remove</button></td></tr>";
+    }
 
     myTable += "</table>";
     document.getElementById("demo").innerHTML = myTable;
 }
 
 function checkout() {
-    var totalAmount = 0;
-    for (var i = 0; i < totals.length; i++) {
-        totalAmount += totals[i];
-    }
+    var totalAmount = totals.reduce((sum, current) => sum + current, 0);
     document.getElementById("total").innerHTML = "Total Amount: R" + totalAmount.toFixed(2);
 }
 
-window.onload = function() {
+window.onload = function () {
     display_all();
 }
