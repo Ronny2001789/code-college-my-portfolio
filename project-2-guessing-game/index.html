@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    </head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cool Guessing Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-    
-<script src="main.js"></script>
 
-</body>                 
+  <h1>🎯 Guess the Secret Number (1-20)</h1>
+  <div class="game-box">
+    <input type="number" id="guessInput" min="1" max="20" placeholder="Enter your guess" />
+    <button onclick="makeGuess()">Guess</button>
+    <div id="message"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
 </html>

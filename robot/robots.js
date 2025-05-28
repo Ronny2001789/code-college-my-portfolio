@@ -73,7 +73,17 @@ function moveUpDown(e) {
 }
 
 
+let head = prompt("enter you password")
+let house = 23;
 
+if(head == house) {
+    alert("welcome to new world")
+} else if(head !== house ) {
+    alert("try again")
+};
+
+
+ 
 
 
 

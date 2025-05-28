@@ -1,17 +1,21 @@
-//produce a random secret number between 1 and 20
-let secret = Math.floor(Math.random() * 20) ; 
-let guess;
+let secret = Math.floor(Math.random() * 20) + 1;
 
-while (guess !== secret) {
+function makeGuess() {
+  const input = document.getElementById("guessInput");
+  const message = document.getElementById("message");
+  const guess = parseInt(input.value);
 
-  // Prompt the user for their guess and convert it to an integer
-  guess = parseInt(prompt("Please guess the secret number (1-20) " + secret));
-
-  if (guess === secret) {
-    alert("Correct Guess!");
+  if (isNaN(guess)) {
+    message.textContent = "🚫 Enter a valid number!";
+  } else if (guess === secret) {
+    message.textContent = "🎉 Correct Guess!";
+    input.disabled = true;
   } else if (guess < secret) {
-    alert("Incorrect, too low.");
+    message.textContent = "📉 Too low. Try again.";
   } else if (guess > secret) {
-    alert("Incorrect, too high.");
+    message.textContent = "📈 Too high. Try again.";
   }
-} 
+
+  input.value = "";
+  input.focus();
+}
