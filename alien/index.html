@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alien Blaster</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(ellipse at center, #000 0%, #050d1f 100%);
+      font-family: 'Orbitron', sans-serif;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #player {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      background: url('car.jpg.jpg') no-repeat center/cover;
+      filter: drop-shadow(0 0 10px yellow);
+    }
+
+    .laser {
+      position: absolute;
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(to top, red, orange);
+      box-shadow: 0 0 8px red;
+      border-radius: 2px;
+    }
+
+    .alien {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      background: url('https://i.imgur.com/ZkL1MNd.png') no-repeat center/cover;
+      filter: drop-shadow(0 0 5px lime);
+    }
+
+    .explosion {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('https://i.imgur.com/Z5sOQ8b.gif') no-repeat center/cover;
+      pointer-events: none;
+      animation: fadeOut 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(1.8);
+      }
+    }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 22px;
+      color: #0ff;
+      text-shadow: 0 0 8px #0ff;
+    }
+
+    #title {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 22px;
+      color: #f0f;
+      text-shadow: 0 0 8px #f0f;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="gameArea">
+  <div id="player"></div>
+  <div id="score">Score: 0</div>
+  <div id="title">ALIEN BLASTER</div>
+</div>
+
+<script>
+  const gameArea = document.getElementById('gameArea');
+  const player = document.getElementById('player');
+  const scoreDisplay = document.getElementById('score');
+  let score = 0;
+
+  let playerX = window.innerWidth / 2 - 40;
+  player.style.left = playerX + 'px';
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && playerX > 0) {
+      playerX -= 20;
+    } else if (e.key === 'ArrowRight' && playerX < window.innerWidth - 80) {
+      playerX += 20;
+    } else if (e.key === ' ') {
+      fireLaser();
+    }
+    player.style.left = playerX + 'px';
+  });
+
+  document.addEventListener('click', fireLaser);
+
+  function fireLaser() {
+    const laser = document.createElement('div');
+    laser.classList.add('laser');
+    laser.style.left = (playerX + 38) + 'px';
+    laser.style.bottom = '90px';
+    gameArea.appendChild(laser);
+
+    let interval = setInterval(() => {
+      let bottom = parseInt(laser.style.bottom);
+      laser.style.bottom = (bottom + 15) + 'px';
+
+      if (bottom > window.innerHeight) {
+        clearInterval(interval);
+        laser.remove();
+      }
+
+      document.querySelectorAll('.alien').forEach(alien => {
+        let alienRect = alien.getBoundingClientRect();
+        let laserRect = laser.getBoundingClientRect();
+
+        if (
+          laserRect.left < alienRect.right &&
+          laserRect.right > alienRect.left &&
+          laserRect.top < alienRect.bottom &&
+          laserRect.bottom > alienRect.top
+        ) {
+          createExplosion(alien.offsetLeft, alien.offsetTop);
+          alien.remove();
+          laser.remove();
+          clearInterval(interval);
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+        }
+      });
+    }, 20);
+  }
+
+  function createExplosion(x, y) {
+    const boom = document.createElement('div');
+    boom.classList.add('explosion');
+    boom.style.left = x + 'px';
+    boom.style.top = y + 'px';
+    gameArea.appendChild(boom);
+    setTimeout(() => boom.remove(), 400);
+  }
+
+  function spawnAlien() {
+    const alien = document.createElement('div');
+    alien.classList.add('alien');
+    alien.style.left = Math.random() * (window.innerWidth - 35) + 'px';
+    alien.style.top = '0px';
+    gameArea.appendChild(alien);
+
+    let fallInterval = setInterval(() => {
+      let top = parseInt(alien.style.top);
+      alien.style.top = (top + 2) + 'px';
+
+      if (top > window.innerHeight) {
+        clearInterval(fallInterval);
+        alien.remove();
+      }
+    }, 30);
+  }
+
+  setInterval(spawnAlien, 800);
+</script>
+
+</body>
+</html>
